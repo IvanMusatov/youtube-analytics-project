@@ -17,6 +17,7 @@ class Channel:
         self.subscriber_count = 0
         self.video_count = 0
         self.view_count = 0
+        self.service = Channel.get_service()
 
         api_key: str = os.getenv('API_KEY')
         youtube = build('youtube', 'v3', developerKey=api_key)
@@ -30,9 +31,76 @@ class Channel:
             self.video_count = channel['statistics']['videoCount']
             self.view_count = channel['statistics']['viewCount']
 
-    #@property
-    #def channel_id(self):
-        #return self.channel_id
+    # @property
+    # def channel_id(self):
+    # return self.channel_id
+
+    def __str__(self):
+        channel = self.service.channels().list(id=self.channel_id, part='snippet').execute()['items'][0]
+        return f"{channel['snippet']['title']} (https://www.youtube.com/channel/{self.channel_id})"
+
+    def __add__(self, other):
+        subscribers1 = \
+        self.service.channels().list(id=self.channel_id, part='statistics').execute()['items'][0]['statistics'][
+            'subscriberCount']
+        subscribers2 = \
+            other.service.channels().list(id=other.channel_id, part='statistics').execute()['items'][0]['statistics'][
+                'subscriberCount']
+        return int(subscribers1) + int(subscribers2)
+
+    def __sub__(self, other):
+        subscribers1 = \
+            self.service.channels().list(id=self.channel_id, part='statistics').execute()['items'][0]['statistics'][
+                'subscriberCount']
+        subscribers2 = \
+            other.service.channels().list(id=other.channel_id, part='statistics').execute()['items'][0]['statistics'][
+                'subscriberCount']
+        return int(subscribers1) - int(subscribers2)
+
+    def __gt__(self, other):
+        subscribers1 = int(
+            self.service.channels().list(id=self.channel_id, part='statistics').execute()['items'][0]['statistics'][
+                'subscriberCount'])
+        subscribers2 = int(
+            other.service.channels().list(id=other.channel_id, part='statistics').execute()['items'][0]['statistics'][
+                'subscriberCount'])
+        return subscribers1 > subscribers2
+
+    def __ge__(self, other):
+        subscribers1 = int(
+            self.service.channels().list(id=self.channel_id, part='statistics').execute()['items'][0]['statistics'][
+                'subscriberCount'])
+        subscribers2 = int(
+            other.service.channels().list(id=other.channel_id, part='statistics').execute()['items'][0]['statistics'][
+                'subscriberCount'])
+        return subscribers1 >= subscribers2
+
+    def __lt__(self, other):
+        subscribers1 = int(
+            self.service.channels().list(id=self.channel_id, part='statistics').execute()['items'][0]['statistics'][
+                'subscriberCount'])
+        subscribers2 = int(
+            other.service.channels().list(id=other.channel_id, part='statistics').execute()['items'][0]['statistics'][
+                'subscriberCount'])
+        return subscribers1 < subscribers2
+
+    def __le__(self, other):
+        subscribers1 = int(
+            self.service.channels().list(id=self.channel_id, part='statistics').execute()['items'][0]['statistics'][
+                'subscriberCount'])
+        subscribers2 = int(
+            other.service.channels().list(id=other.channel_id, part='statistics').execute()['items'][0]['statistics'][
+                'subscriberCount'])
+        return subscribers1 <= subscribers2
+
+    def __eq__(self, other):
+        subscribers1 = int(
+            self.service.channels().list(id=self.channel_id, part='statistics').execute()['items'][0]['statistics'][
+                'subscriberCount'])
+        subscribers2 = int(
+            other.service.channels().list(id=other.channel_id, part='statistics').execute()['items'][0]['statistics'][
+                'subscriberCount'])
+        return subscribers1 == subscribers2
 
     @staticmethod
     def get_service():
