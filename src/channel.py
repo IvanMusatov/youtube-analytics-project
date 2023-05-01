@@ -1,6 +1,7 @@
-from googleapiclient.discovery import build
-import os
 import json
+import os
+
+from googleapiclient.discovery import build
 
 
 class Channel:
@@ -41,8 +42,8 @@ class Channel:
 
     def __add__(self, other):
         subscribers1 = \
-        self.service.channels().list(id=self.channel_id, part='statistics').execute()['items'][0]['statistics'][
-            'subscriberCount']
+            self.service.channels().list(id=self.channel_id, part='statistics').execute()['items'][0]['statistics'][
+                'subscriberCount']
         subscribers2 = \
             other.service.channels().list(id=other.channel_id, part='statistics').execute()['items'][0]['statistics'][
                 'subscriberCount']
