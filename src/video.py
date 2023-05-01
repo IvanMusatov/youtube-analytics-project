@@ -19,9 +19,10 @@ class Video:
         return self.title
 
 
-class PLVideo:
+class PLVideo(Video):
     def __init__(self, video_id, playlist_id):
-        self.video_id = video_id
+        super().__init__(video_id)
+        self.playlist_id = playlist_id
         self.playlist_id = playlist_id
         youtube = build('youtube', 'v3', developerKey=os.environ['API_KEY'])
         video = youtube.videos().list(part='snippet, statistics', id=self.video_id).execute()['items'][0]['snippet']
