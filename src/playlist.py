@@ -20,8 +20,10 @@ class PlayList:
         total_duration = timedelta()
         for video in videos:
             content_details = video.get('contentDetails')
-            if 'duration' in content_details:
-                duration = content_details['duration']
+            video_id = content_details.get('videoId')
+            if video_id:
+                video_data = self.api.videos().list(part='contentDetails, statistics', id=video_id).execute()
+                duration = video_data["items"][0]["contentDetails"]["duration"]
                 parsed_duration = parse_duration(duration)
                 total_duration += parsed_duration
         return total_duration
@@ -29,11 +31,5 @@ class PlayList:
     def show_best_video(self):
         videos = self.api.playlistItems().list(playlistId=self.id, part='snippet').execute().get('items')
         best_video = max(videos, key=lambda v: int(v['snippet']['position']))
-        return f"https://www.youtube.com/watch?v={best_video['snippet']['resourceId']['videoId']}"
-
-
-pl = PlayList('PLguYHBi01DWr4bRWc4uaguASmo7lW4GCb')
-duration = pl.total_duration
-
-print(duration)
-print(pl.show_best_video())
+        video_id = best_video['snippet']['resourceId']['videoId']
+        return f"https://youtu.be/{video_id}"
